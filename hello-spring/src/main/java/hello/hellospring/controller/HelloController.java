@@ -9,24 +9,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HelloController {
 
+    //GetMapping은 url 매핑
     @GetMapping("hello")
     public String hello(Model model){
         model.addAttribute("data", "hello!!");
+        //hello는 templates에 hello.html에 던진다는 의미
         return "hello";
     }
 
-    @GetMapping("hello-mvc") //RequestParam은 인자를 받을 때(여기선 없으니까 ?name=~~~로 인자 넣어줘야함)
+    @GetMapping("hello-mvc")
     public String helloMvc(@RequestParam("name") String name, Model model){
         model.addAttribute("name", name);
-        return "hello-template";
-    }
-    //API 방식
-    @GetMapping("hello-string")
-    @ResponseBody //http에서 body부에 데이터를 직접 넣어주겠다는 뚯
-    public String helloString(@RequestParam("name") String name){
-        return "hello" + name;
+        return "hello_template";
     }
 
+    //http에서 body부에 직접 값을 넣어주겠다는 ResponseBody이다. HttpMessageConverter가 동작함. 문자 그대로 반환은(StringConverter)
+    @GetMapping("hello-string")
+    @ResponseBody
+    public String helloString(@RequestParam("name") String name){
+        return "hello " + name;
+    }
+
+    //객체를 넘기면 Json으로 그대로 반환하라고 인식(JsonConverter)
     @GetMapping("hello-api")
     @ResponseBody
     public Hello helloApi(@RequestParam("name") String name){
@@ -35,12 +39,13 @@ public class HelloController {
         return hello;
     }
 
-    static class Hello{
+    static class Hello {
         private String name;
 
         public String getName(){
             return name;
         }
+
         public void setName(String name){
             this.name = name;
         }
